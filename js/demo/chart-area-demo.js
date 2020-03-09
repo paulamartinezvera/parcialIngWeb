@@ -1,7 +1,40 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
-
+var organizaciones=[];
+var organizacionesSinDuplicados=[]
+var meses=[];
+fetch("../../datos/csvjson.json").then((data)=>{
+ return data.json();
+}).then((res)=>{
+  for(var i=0;i<res.length;i++){
+    console.log("this.organizaciones.length "+this.organizaciones.length);
+    // if(this.organizaciones.length>0){
+    //   for(var j=0;j<this.organizaciones.length;j++){
+    //     
+    //   }
+    // }
+    // if(this.organizaciones.length>0){
+    //   for(var j=0;j<this.organizaciones.length;j++){
+    //     this.organizaciones.push(res[i].ORGANIZACIÓN);
+    //   }
+    // }
+    this.organizaciones.push(res[i].ORGANIZACIÓN);
+    if(res.length-i==1){
+      console.log("ultima");
+      organizacionesSinDuplicados= this.organizaciones.filter((valor, indiceActual, arreglo) => arreglo.indexOf(valor) === indiceActual);
+       console.log("organizaciones2 "+JSON.stringify(organizacionesSinDuplicados));
+      console.log("organizaciones2 LENGTH "+organizacionesSinDuplicados.length);
+      meses=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      this.pintar(organizacionesSinDuplicados,meses)
+      // this.organizacionesSinDuplicados=this.organizaciones.unique();
+      // console.log("organizacionesSinDuplicados "+JSON.stringify(organizacionesSinDuplicados));
+      // console.log("organizacionesSinDuplicados LENGTH "+organizacionesSinDuplicados.length);
+    }
+    
+  }
+ 
+});
 function number_format(number, decimals, dec_point, thousands_sep) {
   // *     example: number_format(1234.56, 2, ',', ' ');
   // *     return: '1 234,56'
@@ -26,13 +59,17 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   }
   return s.join(dec);
 }
-
+function sacarMedia(){
+  
+}
+function pintar(organizaciones,meses2){
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    // labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: [organizaciones[0],organizaciones[1],organizaciones[2],organizaciones[3],organizaciones[4],organizaciones[5],organizaciones[6],organizaciones[7]],
     datasets: [{
       label: "Earnings",
       lineTension: 0.3,
@@ -47,6 +84,7 @@ var myLineChart = new Chart(ctx, {
       pointHitRadius: 10,
       pointBorderWidth: 2,
       data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
+      // data: [0, 10000, 5000, 15000, 10000],
     }],
   },
   options: {
@@ -74,13 +112,16 @@ var myLineChart = new Chart(ctx, {
       }],
       yAxes: [{
         ticks: {
-          maxTicksLimit: 5,
+          maxTicksLimit: meses2.length,
           padding: 10,
           // Include a dollar sign in the ticks
           callback: function(value, index, values) {
-            return '$' + number_format(value);
+           
+            return meses2[index];
+            //return '$' + number_format(value);
           }
         },
+
         gridLines: {
           color: "rgb(234, 236, 244)",
           zeroLineColor: "rgb(234, 236, 244)",
@@ -116,3 +157,5 @@ var myLineChart = new Chart(ctx, {
     }
   }
 });
+
+}
